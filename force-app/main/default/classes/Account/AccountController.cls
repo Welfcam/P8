@@ -1,0 +1,21 @@
+public with sharing class AccountController {
+    public static List<Account> getAllAccounts() {
+        return AccountSelector.getAllAccounts();
+    }
+
+    public static Account getAccountById(Id accountId) {
+        return AccountSelector.getAccountById(accountId);
+    }
+
+    public static Account createAccount(Account account) {
+        return AccountSelector.createAccount(account);
+    }
+
+    public static Account updateAccount(Account account) {
+        return AccountSelector.updateAccount(account);
+    }
+
+    public static void deleteAccountById(Id accountId) {
+        AccountSelector.deleteAccountById(accountId);
+    }
+}
