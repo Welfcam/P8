@@ -1,5 +1,5 @@
 public with sharing class ContractController {
-    public static Contract createContractwithStatusAndTerm(Opportunity opp, String status, Integer contractTerm) {
+    public static Contract createContractWithStatusAndTerm(Opportunity opp, String status, Integer contractTerm) {
         Contract newContract = new Contract(
             AccountId = opp.AccountId,
             OpportunityId__c = opp.Id,
@@ -30,7 +30,7 @@ public with sharing class ContractController {
     public static void deleteContractByOpportunityId(Id opportunityId) {
         ContractSelector.deleteContractByOpportunityId(opportunityId);
     }
-
+    
     public static void deleteContractsByAccountId(Id accountId) {
         ContractSelector.deleteContractsByAccountId(accountId);
     }

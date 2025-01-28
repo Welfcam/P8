@@ -27,7 +27,7 @@ public with sharing class TripSelector {
         Trip__c tripToDelete = [SELECT Id FROM Trip__c WHERE Id = :tripId LIMIT 1];
         delete tripToDelete;
     }
-
+    
     public static void deleteTripsByAccountId(Id accountId) {
         List<Trip__c> tripListToDelete = [SELECT Id FROM Trip__C WHERE AccountId__c = :accountId];
         delete tripListToDelete;

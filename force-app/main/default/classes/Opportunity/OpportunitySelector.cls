@@ -36,6 +36,4 @@ public with sharing class OpportunitySelector {
         List<Opportunity> oppListToDelete = [SELECT Id FROM Opportunity WHERE AccountId = :accountId];
         delete oppListToDelete;
     }
-
-    
 }
