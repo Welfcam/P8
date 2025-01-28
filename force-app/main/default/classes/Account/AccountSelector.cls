@@ -1,20 +1,15 @@
 public with sharing class AccountSelector {
-    public static List<Account> getAllAccounts() {
-        return [SELECT Id, Name, Type, Industry, Phone, Website, BillingStreet, BillingPostalCode, BillingCity, BillingCountry 
-                FROM Account];
-    }
-    
     public static Account getAccountById(Id accountId) {
         return [SELECT Id, Name, Type, Industry, Phone, Website, BillingStreet, BillingPostalCode, BillingCity, BillingCountry 
                 FROM Account 
-                WHERE Id = :accountId];
+                WHERE Id = :accountId LIMIT 1];
     }
 
     public static Account createAccount(Account account) {
         insert account;
         return account;
     }
-
+    
     public static Account updateAccount(Account account) {
         update account;
         return account;

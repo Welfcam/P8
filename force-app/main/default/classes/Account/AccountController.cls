@@ -1,13 +1,12 @@
 public with sharing class AccountController {
-    public static List<Account> getAllAccounts() {
-        return AccountSelector.getAllAccounts();
-    }
-
     public static Account getAccountById(Id accountId) {
         return AccountSelector.getAccountById(accountId);
     }
 
     public static Account createAccount(Account account) {
+        if (String.isEmpty(account.Name)) {
+            throw new IllegalArgumentException('The Name field is required.');
+        }
         return AccountSelector.createAccount(account);
     }
 
