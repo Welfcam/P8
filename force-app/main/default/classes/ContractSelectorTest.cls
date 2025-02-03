@@ -38,6 +38,39 @@ private class ContractSelectorTest {
         Assert.areEqual(contract.OpportunityId__c, testContract.OpportunityId__c);
     }
 
+    //Test de la récupération d'une liste de contrats via une liste d'opportunités.
+    @isTest
+    static void testGetContractsByOppIds() {
+        Account testAccount = TestDataFactory.createAccountTest();
+        insert testAccount;
+        Account testAccount2 = TestDataFactory.createAccountTest2();
+        insert testAccount2;
+        List<Destination__c> testDestList = TestDataFactory.createDestinationListTest();
+        insert testDestList;
+        Opportunity testOpp = TestDataFactory.createOppTest(testAccount.Id, testDestList[0].Id);
+        insert testOpp;
+        Contract testContract1 = TestDataFactory.createContractTest(testOpp);
+        insert testContract1;
+        Opportunity testOpp2 = TestDataFactory.createOppTest2(testAccount.Id, testDestList[1].Id);
+        insert testOpp2;
+        Contract testContract2 = TestDataFactory.createContractTest(testOpp2);
+        insert testContract2;
+        Opportunity testOpp3 = TestDataFactory.createOppTestWithLessThan10Participants(testAccount2.Id, testDestList[1].Id);
+        insert testOpp3;
+        Contract testContract3 = TestDataFactory.createContractTest(testOpp3);
+        insert testContract3;
+        List<Opportunity> oppList = [SELECT Id, Name FROM Opportunity LIMIT 3];
+        List<Id> oppIdList =  new List<Id>();
+        for(Opportunity opp : oppList) {
+            oppIdList.add(opp.Id);
+        }
+        Test.startTest();
+        List<Contract> contractsList = ContractSelector.getContractsByOppIds(oppIdList);
+        Test.stopTest();
+        Assert.areEqual(3, contractsList.size(), 'Should return 3 results');
+        Assert.areEqual(testAccount.Id, contractsList[0].AccountId, 'Should return testAccount Id');
+    }
+
     //Test de la récupération d'un contrat par son Id
     @isTest
     static void testGetContractByAccountId() {

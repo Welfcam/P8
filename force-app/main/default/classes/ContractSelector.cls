@@ -12,6 +12,12 @@ public with sharing class ContractSelector {
                 LIMIT 1];
     }
 
+    public static List<Contract> getContractsByOppIds(List<Id> oppIds) {
+        return [SELECT Id, ContractNumber, AccountId, OpportunityId__c, Status, StartDate, EndDate, ContractTerm
+                FROM Contract
+                WHERE OpportunityId__c IN :oppIds];
+    }
+
     public static List<Contract> getContractsByAccountId(Id accountId) {
         return [SELECT Id, ContractNumber, AccountId, OpportunityId__c, Status, StartDate, EndDate, ContractTerm 
                 FROM Contract 

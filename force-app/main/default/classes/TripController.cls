@@ -1,6 +1,11 @@
 //Classe de gestion des Voyages Salesforce. Utiliser TripSelector pour interagir avec la base de données.
 public with sharing class TripController {
     public static Trip__c createTrip(Opportunity opp){
+        Trip__c tripToInsert = buildTrip(opp);
+        return TripSelector.createTrip(tripToInsert);
+	}
+
+    public static Trip__c buildTrip(Opportunity opp) {
         Trip__c newTrip = new Trip__c(
             Opportunity__c = opp.Id,
             Status__c = 'To come',
@@ -11,8 +16,8 @@ public with sharing class TripController {
             Total_Cost__c = opp.Total_Amount__c,
             AccountId__c = opp.AccountId
         );
-        return TripSelector.createTrip(newTrip);
-	}
+        return newTrip;
+    }
 
     public static Trip__c getTripById(Id tripId) {
         return TripSelector.getTripById(tripId);
@@ -38,5 +43,5 @@ public with sharing class TripController {
         TripSelector.deleteTripsByAccountId(accountId);
     }
 
-	 
+
 }

@@ -166,6 +166,17 @@ public class TestDataFactory {
         return contractTest2;
     }
 
+    public static Contract createContractTest3(Opportunity opp) {
+        Contract contractTest2 = new Contract(
+            AccountId = opp.AccountId,
+            OpportunityId__c = opp.Id,
+            Status = 'Draft',
+            StartDate = opp.Start_Date__c,
+            ContractTerm = 3
+        );
+        return contractTest2;
+    }
+
     public static Trip__c createTripTest(Opportunity opp) {
         Trip__c tripTest1 = new Trip__c(
             Opportunity__c = opp.Id,
