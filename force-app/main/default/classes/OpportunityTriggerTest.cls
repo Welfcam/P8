@@ -26,6 +26,42 @@ private class OpportunityTriggerTest {
         Assert.areEqual('Activated', updatedContract[0].Status, 'Should return Activated'); //Mise à jour du statut du contrat
     }
 
+    //Test de la mise à jour de 3 opportunités à Closed Won sans erreur sur les dates
+    @isTest
+    static void testHandle3OppClosedWonWithCorrectDates() {
+        Account testAccount = TestDataFactory.createAccountTest();
+        insert testAccount;
+        Account testAccount2 = TestDataFactory.createAccountTest2();
+        insert testAccount2;
+        List<Destination__c> testDestList = TestDataFactory.createDestinationListTest();
+        insert testDestList;
+        Opportunity testOpp = TestDataFactory.createOppTest(testAccount.Id, testDestList[0].Id);
+        insert testOpp;
+        Contract testContract1 = TestDataFactory.createContractTest(testOpp);
+        insert testContract1;
+        Opportunity testOpp2 = TestDataFactory.createOppTest2(testAccount.Id, testDestList[1].Id);
+        insert testOpp2;
+        Contract testContract2 = TestDataFactory.createContractTest(testOpp2);
+        insert testContract2;
+        Opportunity testOpp3 = TestDataFactory.createOppTestWithLessThan10Participants(testAccount2.Id, testDestList[1].Id);
+        insert testOpp3;
+        Contract testContract3 = TestDataFactory.createContractTest(testOpp3);
+        insert testContract3;
+        List<Opportunity> oppListToUpdate = [SELECT Id, StageName FROM Opportunity];
+        for(Opportunity opp : oppListToUpdate) {
+            opp.StageName = 'Closed Won';
+        }
+        Test.startTest();
+        update oppListToUpdate;
+        Test.stopTest();
+        List<Contract> contractList = [SELECT Id, Status FROM Contract];
+        List<Opportunity> oppList = [SELECT StageName FROM Opportunity];
+        List<Trip__c> tripList = [SELECT Id, Status__c FROM Trip__c];
+        Assert.areEqual('Closed Won', oppList[1].StageName, 'Should return Closed Won');
+        Assert.areEqual(3, tripList.size(), 'Should return 3 results');
+        Assert.areEqual('Activated', contractList[2].Status, 'Should return Activated');
+    }    
+
     //Test de l'insertion d'une Opportunité avec une erreur sur les dates
     @isTest
     static void testHandleInsertOppWithErrorOnDates() {
@@ -85,7 +121,7 @@ private class OpportunityTriggerTest {
         Assert.areEqual(10, notUpdatedOpp.Number_Of_Participants__c, 'Should return 10');
     }
     
-    //Test d'un Opportunité qui passe à Proposal/Price Quote
+    //Test d'une Opportunité qui passe à Proposal/Price Quote
     @isTest
     static void testHandleOppProposal() {
         Account testAccount = TestDataFactory.createAccountTest();
@@ -102,6 +138,35 @@ private class OpportunityTriggerTest {
         Contract createdContract = [SELECT Id, Status FROM Contract WHERE OpportunityId__c = :testOpp.Id LIMIT 1];
         Assert.areEqual('Proposal/Price Quote', updatedOrder.StageName, 'Should return Proposal/Price Quote');
         Assert.areEqual('Draft', createdContract.Status, 'Should return Draft'); //Création du contrat associé
+    }
+
+    //Test de 3 Opportunités qui passent à Proposal/Price Quote
+    @isTest
+    static void testHandle3OppProposal() {
+        Account testAccount = TestDataFactory.createAccountTest();
+        insert testAccount;
+        Account testAccount2 = TestDataFactory.createAccountTest2();
+        insert testAccount2;
+        List<Destination__c> testDestList = TestDataFactory.createDestinationListTest();
+        insert testDestList;
+        Opportunity testOpp = TestDataFactory.createOppTest(testAccount.Id, testDestList[0].Id);
+        insert testOpp;
+        Opportunity testOpp2 = TestDataFactory.createOppTest2(testAccount.Id, testDestList[1].Id);
+        insert testOpp2;
+        Opportunity testOpp3 = TestDataFactory.createOppTestWithLessThan10Participants(testAccount2.Id, testDestList[1].Id);
+        insert testOpp3;
+        List<Opportunity> oppListToUpdate = [SELECT Id, StageName FROM Opportunity];
+        for(Opportunity opp : oppListToUpdate) {
+            opp.StageName = 'Proposal/Price Quote';
+        }
+        Test.startTest();
+        update oppListToUpdate;
+        Test.stopTest();
+        List<Contract> contractList = [SELECT Id, Status FROM Contract];
+        List<Opportunity> oppList = [SELECT StageName FROM Opportunity];
+        Assert.areEqual('Proposal/Price Quote', oppList[1].StageName, 'Should return Proposal/Price Quote');
+        Assert.areEqual(3, contractList.size(), 'Should return 3 results');
+        Assert.areEqual('Draft', contractList[2].Status, 'Should return Draft');
     }
 
     //Test d'une Opportunité qui passe à Negociation/Review

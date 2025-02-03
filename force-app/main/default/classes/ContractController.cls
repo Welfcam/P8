@@ -1,6 +1,11 @@
 //Classe de gestion des Contrats Salesforce. Utiliser ContractSelector pour interagir avec la base de données
 public with sharing class ContractController {
     public static Contract createContractWithStatusAndTerm(Opportunity opp, String status, Integer contractTerm) {
+        Contract contractToInsert = buildContractWithStatusAndTerm(opp, status, contractTerm); 
+        return ContractSelector.createContract(contractToInsert);
+    }
+
+    public static Contract buildContractWithStatusAndTerm(Opportunity opp, String status, Integer contractTerm) {
         Contract newContract = new Contract(
             AccountId = opp.AccountId,
             OpportunityId__c = opp.Id,
@@ -8,11 +13,15 @@ public with sharing class ContractController {
             StartDate = opp.Start_Date__c,
             ContractTerm = contractTerm
         );
-        return ContractSelector.createContract(newContract);
+        return newContract;
     }
 
     public static Contract getContractByOppId(Id oppId) {
         return ContractSelector.getContractByOppId(oppId);
+    }
+
+    public static List<Contract> getContractsByOppIds(List<Id> oppIds) {
+        return ContractSelector.getContractsByOppIds(oppIds);
     }
 
     public static List<Contract> getContractsByAccountId(Id accountId) {
